@@ -52,14 +52,6 @@ func TestDivideSeiMei(t *testing.T) {
 			},
 		},
 		{
-			name:      "空白があったらそれを優先",
-			inputName: "田 中太郎",
-			want: seimei.DividedName{
-				LastName:  "田",
-				FirstName: "中太郎",
-			},
-		},
-		{
 			name:      "空白が1つだけあったらそれを分割場所として優先",
 			inputName: "田 中太郎",
 			want: seimei.DividedName{
@@ -68,7 +60,7 @@ func TestDivideSeiMei(t *testing.T) {
 			},
 		},
 		{
-			name:      "全角空白も対応、左右はトリム",
+			name:      "空白が1つだけあったらそれを分割場所として優先。全角空白も対応、左右はトリム",
 			inputName: "  　　  田　中太郎  　　  ",
 			want: seimei.DividedName{
 				LastName:  "田",

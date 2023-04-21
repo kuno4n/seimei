@@ -96,7 +96,15 @@ func DivideSeiMei(fullName string) (*DividedName, error) {
 	fullName = width.Fold.String(fullName) // 各全角文字を半角文字にする
 	fullName = strings.TrimSpace(fullName) // 左右をトリム
 
-	// もし空白が1つだけだったら、そこでの分割を優先する
+	// もし1文字以下だったら、そのまま出力
+	if len([]rune(fullName)) <= 1 {
+		return &DividedName{
+			LastName:  fullName,
+			FirstName: "",
+		}, nil
+	}
+
+	// もし途中に空白が1つだけだったら、そこでの分割を優先する
 	if strings.Count(fullName, separator) == 1 {
 		names := strings.Split(fullName, separator)
 		return &DividedName{

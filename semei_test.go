@@ -1,7 +1,6 @@
 package seimei_test
 
 import (
-	"github.com/glassmonkey/seimei/v2/parser"
 	"testing"
 
 	"github.com/kuno4n/seimei"
@@ -76,9 +75,12 @@ func TestDivideSeiMei(t *testing.T) {
 			},
 		},
 		{
-			name:      "1文字は分割できない",
+			name:      "1文字はそのまま出力",
 			inputName: "あ",
-			wantErr:   parser.ErrNameLength,
+			want: seimei.DividedName{
+				LastName:  "あ",
+				FirstName: "",
+			},
 		},
 	}
 

@@ -11,6 +11,8 @@ import (
 
 	"github.com/glassmonkey/seimei/v2/feature"
 	"github.com/glassmonkey/seimei/v2/parser"
+
+	"golang.org/x/text/width"
 )
 
 const separator = " "
@@ -91,6 +93,20 @@ func initKanjiFeatureManager() feature.KanjiFeatureManager {
 }
 
 func DivideSeiMei(fullName string) (*DividedName, error) {
+	fullName = width.Fold.String(fullName) // 各全角文字を半角文字にする
+	fullName = strings.TrimSpace(fullName) // 左右をトリム
+
+	// もし空白が1つだけだったら、そこでの分割を優先する
+	if strings.Count(fullName, separator) == 1 {
+		names := strings.Split(fullName, separator)
+		return &DividedName{
+			LastName:  names[0],
+			FirstName: names[1],
+		}, nil
+	}
+
+	// もし空白が0もしくは2つ以上だったら、空白を除去して、姓名分割パーサにかける
+	fullName = strings.ReplaceAll(fullName, separator, "")
 	dividedName, err := nameParser.Parse(parser.FullName(fullName))
 	if err != nil {
 		return nil, err

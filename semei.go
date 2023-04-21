@@ -90,7 +90,7 @@ func initKanjiFeatureManager() feature.KanjiFeatureManager {
 	}
 }
 
-func DivideName(fullName string) (*DividedName, error) {
+func DivideSeiMei(fullName string) (*DividedName, error) {
 	dividedName, err := nameParser.Parse(parser.FullName(fullName))
 	if err != nil {
 		return nil, err

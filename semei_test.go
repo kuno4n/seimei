@@ -1,19 +1,21 @@
 package seimei_test
 
 import (
+	"github.com/glassmonkey/seimei/v2/parser"
 	"testing"
 
 	"github.com/kuno4n/seimei"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestDivideName(t *testing.T) {
 	t.Parallel()
 
 	type testdata struct {
-		name       string
-		inputName  string
-		want       string
-		wantErrMsg string
+		name      string
+		inputName string
+		want      string
+		wantErr   error
 	}
 
 	tests := []testdata{
@@ -38,10 +40,10 @@ func TestDivideName(t *testing.T) {
 			want:      "中曽根 康弘",
 		},
 		{
-			name:       "1文字は分割できない",
-			inputName:  "あ",
-			want:       "",
-			wantErrMsg: "parse error: name length needs at least 2 chars\n",
+			name:      "1文字は分割できない",
+			inputName: "あ",
+			want:      "",
+			wantErr:   parser.ErrNameLength,
 		},
 	}
 
@@ -49,16 +51,11 @@ func TestDivideName(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-
-			if err := seimei.ParseName(stdout, stderr, tt.inputName, tt.inputParser); err != nil {
-				t.Fatalf("happen error: %v", err)
-			}
-
-			if stdout.String() != tt.want {
-				t.Errorf("failed to test. got: %s, want: %s", stdout, tt.want)
-			}
-			if stderr.String() != tt.wantErrMsg {
-				t.Errorf("failed to test. got: %s, want: %s", stderr, tt.wantErrMsg)
+			dividedName, err := seimei.DivideSeiMei(tt.inputName)
+			if tt.wantErr != nil {
+				assert.ErrorIs(t, err, tt.wantErr)
+			} else {
+				assert.Equal(t, tt.want, dividedName.LastName+" "+dividedName.FirstName)
 			}
 		})
 	}
